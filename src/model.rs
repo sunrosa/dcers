@@ -1,7 +1,11 @@
+use super::*;
+
 use std::string;
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+
+pub type Id = String;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ExportedJson {
@@ -14,7 +18,7 @@ pub struct ExportedJson {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Message {
-    pub id: String,
+    pub id: Id,
     #[serde(rename = "type")]
     pub mtype: MessageType,
     pub timestamp: DateTime<Utc>,
@@ -52,7 +56,7 @@ pub enum MessageType {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct User {
-    pub id: String,
+    pub id: Id,
     pub name: String,
     pub discriminator: String,
     pub nickname: String,
@@ -62,7 +66,7 @@ pub struct User {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Attachment {
-    pub id: String,
+    pub id: Id,
     pub url: String,
     #[serde(rename = "fileName")]
     pub file_name: String,
@@ -107,7 +111,7 @@ pub struct Field {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Sticker {
-    pub id: String,
+    pub id: Id,
     pub name: String,
     pub format: String,
     #[serde(rename = "sourceUrl")]
@@ -122,7 +126,7 @@ pub struct Reaction {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Emoji {
-    pub id: String,
+    pub id: Id,
     pub name: String,
     #[serde(rename = "isAnimated")]
     pub is_animated: bool,
@@ -139,16 +143,16 @@ pub struct EmbedAuthor {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Reference {
     #[serde(rename = "messageId")]
-    pub message_id: Option<String>,
+    pub message_id: Option<Id>,
     #[serde(rename = "channelId")]
-    pub channel_id: String,
+    pub channel_id: Id,
     #[serde(rename = "guildId")]
-    pub guild_id: Option<String>,
+    pub guild_id: Option<Id>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Guild {
-    pub id: String,
+    pub id: Id,
     pub name: String,
     #[serde(rename = "iconUrl")]
     pub icon_url: String,
@@ -156,11 +160,11 @@ pub struct Guild {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Channel {
-    pub id: String,
+    pub id: Id,
     #[serde(rename = "type")]
     pub ctype: ChannelType,
     #[serde(rename = "categoryId")]
-    pub category_id: String,
+    pub category_id: Id,
     pub category: String,
     pub name: String,
     pub topic: Option<String>,
@@ -186,43 +190,45 @@ mod test {
     #[test]
     /// Does the model deserialize without error? Tested on a medium-sized group DM.
     fn group_1() {
-        test_file("Direct Messages - Group - 1600s need not apply [1032681951666122772].json")
+        json::read_export(
+            "Direct Messages - Group - 1600s need not apply [1032681951666122772].json",
+        )
+        .unwrap();
     }
 
     #[test]
     /// Does the model deserialize without error? Tested on a large server general channel.
     fn server_1() {
-        test_file("VRChess club - General Area - general [793007680939098124].json")
+        json::read_export("VRChess club - General Area - general [793007680939098124].json")
+            .unwrap();
     }
 
     #[test]
     /// Does the model deserialize without error? Tested on a medium server channel.
     fn server_2() {
-        test_file(
+        json::read_export(
             "ball. (working title) - Voice Channel - mari-self-talk [998767292798210048].json",
-        );
+        )
+        .unwrap();
     }
 
     #[test]
     /// Does the model deserialize without error? Tested on a medium bot command channel.
     fn server_3() {
-        test_file("VRChess club - Voice Channels - bot-commands [989779220651712522].json");
+        json::read_export("VRChess club - Voice Channels - bot-commands [989779220651712522].json")
+            .unwrap();
     }
 
     #[test]
     /// Does the model deserialize without error? Tested on a huge DM.
     fn dm_1() {
-        test_file("Direct Messages - Private - Mad as a Nutter [367668636959244289].json");
+        json::read_export("Direct Messages - Private - Mad as a Nutter [367668636959244289].json")
+            .unwrap();
     }
 
     #[test]
     /// Does the model deserialize without error? Tested on a medium DM.
     fn dm_2() {
-        test_file("Direct Messages - Private - mint [730391742418911272].json");
-    }
-
-    fn test_file(path: &str) {
-        let file = std::fs::File::open(path).expect("Could not open test file.");
-        let _: ExportedJson = serde_json::from_reader(file).expect("Could not parse json.");
+        json::read_export("Direct Messages - Private - mint [730391742418911272].json").unwrap();
     }
 }
