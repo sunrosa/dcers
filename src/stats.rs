@@ -70,6 +70,17 @@ pub fn top_words(
     return words;
 }
 
+/// Total word count of messages, separated by spaces.
+pub fn word_count(messages: &Vec<model::Message>) -> u32 {
+    let mut word_count: u32 = 0;
+
+    for message in messages {
+        word_count += message.content.split(' ').count() as u32;
+    }
+
+    return word_count;
+}
+
 #[cfg(test)]
 mod test {
     use super::*;

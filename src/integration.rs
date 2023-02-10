@@ -41,3 +41,12 @@ fn print_word_count() {
         println!("{:?}", word);
     }
 }
+
+#[test]
+fn print_total_word_count() {
+    let json: model::ExportedJson = json::read_export(
+        "test_json/Direct Messages - Group - 1600s need not apply [1032681951666122772].json",
+    )
+    .unwrap();
+    println!("{:?}", stats::word_count(&json.messages));
+}
