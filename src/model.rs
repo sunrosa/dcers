@@ -4,8 +4,15 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
+#[non_exhaustive]
+pub struct ExportedJson {
+    pub messages: Vec<Message>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Message {
-    pub id: u64,
+    pub id: String,
+    #[serde(rename = "type")]
     pub mtype: MessageType,
     pub timestamp: DateTime<Utc>,
     #[serde(rename = "timestampEdited")]
@@ -28,13 +35,19 @@ pub struct Message {
 pub enum MessageType {
     Default,
     RecipientAdd,
+    RecipientRemove,
+    Call,
+    ChannelIconChange,
+    ChannelNameChange,
+    Reply,
+    ChannelPinnedMessage,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct User {
-    pub id: u64,
+    pub id: String,
     pub name: String,
-    pub discriminator: u16,
+    pub discriminator: String,
     pub nickname: String,
     #[serde(rename = "isBot")]
     pub is_bot: bool,
@@ -42,7 +55,7 @@ pub struct User {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Attachment {
-    pub id: u64,
+    pub id: String,
     pub url: String,
     #[serde(rename = "fileName")]
     pub file_name: String,
@@ -56,9 +69,9 @@ pub struct Embed {
     pub url: String,
     pub timestamp: Option<DateTime<Utc>>,
     pub description: String,
-    pub color: String, /* TODO: Change this to something typed */
-    pub author: EmbedAuthor,
-    pub thumbnail: Thumbnail,
+    pub color: Option<String>, /* TODO: Change this to something typed */
+    pub author: Option<EmbedAuthor>,
+    pub thumbnail: Option<Thumbnail>,
     pub images: Vec<Image>,
     pub fields: Vec<Field>,
 }
@@ -87,7 +100,7 @@ pub struct Field {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Sticker {
-    pub id: u64,
+    pub id: String,
     pub name: String,
     pub format: String,
     #[serde(rename = "sourceUrl")]
@@ -102,7 +115,7 @@ pub struct Reaction {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Emoji {
-    pub id: u64,
+    pub id: String,
     pub name: String,
     #[serde(rename = "isAnimated")]
     pub is_animated: bool,
@@ -119,9 +132,9 @@ pub struct EmbedAuthor {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Reference {
     #[serde(rename = "messageId")]
-    pub message_id: u64,
+    pub message_id: String,
     #[serde(rename = "channelId")]
-    pub channel_id: u64,
+    pub channel_id: String,
     #[serde(rename = "guildId")]
-    pub guild_id: Option<u64>,
+    pub guild_id: Option<String>,
 }
