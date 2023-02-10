@@ -22,13 +22,52 @@ pub fn message_count_by_user(
     return users;
 }
 
-/// Create a vector containing a unique list of all users that have sent messages contained in the list of messages.
+/// Create a Vector containing a unique list of all users that have sent messages contained in the list of messages.
 pub fn all_users(messages: &Vec<model::Message>) -> Vec<&model::User> {
     let mut users: HashMap<&model::Id, &model::User> = Default::default();
     for message in messages {
         users.insert(&message.author.id, &message.author);
     }
     return users.values().cloned().collect();
+}
+
+/// Create a HashMap containing a list of words and the number of times they've each been used.
+/// * `messages` - The Discord messages to be processed.
+/// * `case_sensitive` - Convert the words to lowercase before processing them.
+/// * `restrict_to_alphanumeric` - Delete all non-alphanumeric characters before processing them.
+pub fn top_words(
+    messages: &Vec<model::Message>,
+    case_sensitive: bool,
+    restrict_to_alphanumeric: bool,
+) -> HashMap<String, u32> {
+    let mut words: HashMap<String, u32> = Default::default();
+
+    for message in messages {
+        for word in message.content.split(' ') {
+            let mut word_modified: String = word.to_string();
+            if restrict_to_alphanumeric {
+                word_modified = word_modified
+                    .chars()
+                    .filter(|c| c.is_alphabetic())
+                    .collect();
+            }
+            if !case_sensitive {
+                word_modified = word_modified.to_lowercase();
+            }
+            if word_modified == "" {
+                continue;
+            }
+            words.insert(
+                word_modified.to_owned(),
+                match words.get(&word_modified) {
+                    Some(w) => w + 1,
+                    None => 1,
+                },
+            );
+        }
+    }
+
+    return words;
 }
 
 #[cfg(test)]
@@ -38,7 +77,7 @@ mod test {
     #[test]
     fn test_message_count_by_user() {
         let json = json::read_export(
-            "VRChess club - Server Info - scam_awareness [930732429113696296].json",
+            "test_json/VRChess club - Server Info - scam_awareness [930732429113696296].json",
         )
         .unwrap();
         let count = message_count_by_user(&json.messages);

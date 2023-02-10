@@ -191,7 +191,7 @@ mod test {
     /// Does the model deserialize without error? Tested on a medium-sized group DM.
     fn test_group_1() {
         json::read_export(
-            "Direct Messages - Group - 1600s need not apply [1032681951666122772].json",
+            "test_json/Direct Messages - Group - 1600s need not apply [1032681951666122772].json",
         )
         .unwrap();
     }
@@ -199,15 +199,17 @@ mod test {
     #[test]
     /// Does the model deserialize without error? Tested on a large server general channel.
     fn test_server_1() {
-        json::read_export("VRChess club - General Area - general [793007680939098124].json")
-            .unwrap();
+        json::read_export(
+            "test_json/VRChess club - General Area - general [793007680939098124].json",
+        )
+        .unwrap();
     }
 
     #[test]
     /// Does the model deserialize without error? Tested on a medium server channel.
     fn test_server_2() {
         json::read_export(
-            "ball. (working title) - Voice Channel - mari-self-talk [998767292798210048].json",
+            "test_json/ball. (working title) - Voice Channel - mari-self-talk [998767292798210048].json",
         )
         .unwrap();
     }
@@ -215,20 +217,25 @@ mod test {
     #[test]
     /// Does the model deserialize without error? Tested on a medium bot command channel.
     fn test_server_3() {
-        json::read_export("VRChess club - Voice Channels - bot-commands [989779220651712522].json")
-            .unwrap();
+        json::read_export(
+            "test_json/VRChess club - Voice Channels - bot-commands [989779220651712522].json",
+        )
+        .unwrap();
     }
 
     #[test]
     /// Does the model deserialize without error? Tested on a huge DM.
     fn test_dm_1() {
-        json::read_export("Direct Messages - Private - Mad as a Nutter [367668636959244289].json")
-            .unwrap();
+        json::read_export(
+            "test_json/Direct Messages - Private - Mad as a Nutter [367668636959244289].json",
+        )
+        .unwrap();
     }
 
     #[test]
     /// Does the model deserialize without error? Tested on a medium DM.
     fn test_dm_2() {
-        json::read_export("Direct Messages - Private - mint [730391742418911272].json").unwrap();
+        json::read_export("test_json/Direct Messages - Private - mint [730391742418911272].json")
+            .unwrap();
     }
 }
