@@ -44,6 +44,10 @@ pub enum MessageType {
     ChannelNameChange,
     Reply,
     ChannelPinnedMessage,
+    GuildMemberJoin,
+    #[serde(rename = "20")]
+    _20,
+    ThreadCreated,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -69,7 +73,7 @@ pub struct Attachment {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Embed {
     pub title: String,
-    pub url: String,
+    pub url: Option<String>,
     pub timestamp: Option<DateTime<Utc>>,
     pub description: String,
     pub color: Option<String>, /* TODO: Change this to something typed */
@@ -129,13 +133,13 @@ pub struct Emoji {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct EmbedAuthor {
     pub name: String,
-    pub url: String,
+    pub url: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Reference {
     #[serde(rename = "messageId")]
-    pub message_id: String,
+    pub message_id: Option<String>,
     #[serde(rename = "channelId")]
     pub channel_id: String,
     #[serde(rename = "guildId")]
@@ -165,10 +169,60 @@ pub struct Channel {
 #[derive(Debug, Deserialize, Serialize)]
 pub enum ChannelType {
     DirectGroupTextChat,
+    GuildTextChat,
+    DirectTextChat,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DateRange {
     pub after: Option<DateTime<Utc>>,
     pub before: Option<DateTime<Utc>>,
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    /// Does the model deserialize without error? Tested on a medium-sized group DM.
+    fn group_1() {
+        test_file("Direct Messages - Group - 1600s need not apply [1032681951666122772].json")
+    }
+
+    #[test]
+    /// Does the model deserialize without error? Tested on a large server general channel.
+    fn server_1() {
+        test_file("VRChess club - General Area - general [793007680939098124].json")
+    }
+
+    #[test]
+    /// Does the model deserialize without error? Tested on a medium server channel.
+    fn server_2() {
+        test_file(
+            "ball. (working title) - Voice Channel - mari-self-talk [998767292798210048].json",
+        );
+    }
+
+    #[test]
+    /// Does the model deserialize without error? Tested on a medium bot command channel.
+    fn server_3() {
+        test_file("VRChess club - Voice Channels - bot-commands [989779220651712522].json");
+    }
+
+    #[test]
+    /// Does the model deserialize without error? Tested on a huge DM.
+    fn dm_1() {
+        test_file("Direct Messages - Private - Mad as a Nutter [367668636959244289].json");
+    }
+
+    #[test]
+    /// Does the model deserialize without error? Tested on a medium DM.
+    fn dm_2() {
+        test_file("Direct Messages - Private - mint [730391742418911272].json");
+    }
+
+    fn test_file(path: &str) {
+        let file = std::fs::File::open(path).expect("Could not open test file.");
+        let _: ExportedJson = serde_json::from_reader(file).expect("Could not parse json.");
+    }
 }
