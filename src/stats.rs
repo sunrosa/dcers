@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 /// Get the number of messages sent per user.
 /// # Returns
-/// A hashmap of Discord user IDs and the amount of messages sent by that user.
+/// A hashmap of Discord user IDs and a tuple of the user's data and the amount of messages sent by that user.
 pub fn message_count_by_user(
     messages: &Vec<model::Message>,
 ) -> HashMap<&model::Id, (&model::User, u32)> {
@@ -20,6 +20,15 @@ pub fn message_count_by_user(
     }
 
     return users;
+}
+
+/// Create a vector containing a unique list of all users that have sent messages contained in the list of messages.
+pub fn all_users(messages: &Vec<model::Message>) -> Vec<&model::User> {
+    let mut users: HashMap<&model::Id, &model::User> = Default::default();
+    for message in messages {
+        users.insert(&message.author.id, &message.author);
+    }
+    return users.values().cloned().collect();
 }
 
 #[cfg(test)]
