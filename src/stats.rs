@@ -48,7 +48,7 @@ pub fn top_words(
             if restrict_to_alphanumeric {
                 word_modified = word_modified
                     .chars()
-                    .filter(|c| c.is_alphabetic())
+                    .filter(|c| c.is_alphanumeric())
                     .collect();
             }
             if !case_sensitive {
