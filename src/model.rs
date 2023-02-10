@@ -4,9 +4,12 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-#[non_exhaustive]
 pub struct ExportedJson {
+    pub guild: Guild,
+    pub channel: Channel,
     pub messages: Vec<Message>,
+    #[serde(rename = "dateRange")]
+    pub date_range: DateRange,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -137,4 +140,35 @@ pub struct Reference {
     pub channel_id: String,
     #[serde(rename = "guildId")]
     pub guild_id: Option<String>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Guild {
+    pub id: String,
+    pub name: String,
+    #[serde(rename = "iconUrl")]
+    pub icon_url: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Channel {
+    pub id: String,
+    #[serde(rename = "type")]
+    pub ctype: ChannelType,
+    #[serde(rename = "categoryId")]
+    pub category_id: String,
+    pub category: String,
+    pub name: String,
+    pub topic: Option<String>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub enum ChannelType {
+    DirectGroupTextChat,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct DateRange {
+    pub after: Option<DateTime<Utc>>,
+    pub before: Option<DateTime<Utc>>,
 }
