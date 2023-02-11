@@ -33,7 +33,7 @@ fn print_word_count() {
         "test_json/Direct Messages - Group - 1600s need not apply [1032681951666122772].json",
     )
     .unwrap();
-    let mut words: Vec<_> = stats::top_words(&json.messages, false, true)
+    let mut words: Vec<_> = stats::word_frequency(&json.messages, false, true)
         .into_iter()
         .collect();
     words.sort_by(|a, b| a.1.cmp(&b.1));

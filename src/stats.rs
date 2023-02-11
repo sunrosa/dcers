@@ -35,7 +35,7 @@ pub fn all_users(messages: &Vec<model::Message>) -> Vec<&model::User> {
 /// * `messages` - The Discord messages to be processed.
 /// * `case_sensitive` - Convert the words to lowercase before processing them.
 /// * `restrict_to_alphanumeric` - Delete all non-alphanumeric characters before processing them.
-pub fn top_words(
+pub fn word_frequency(
     messages: &Vec<model::Message>,
     case_sensitive: bool,
     restrict_to_alphanumeric: bool,
