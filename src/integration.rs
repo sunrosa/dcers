@@ -8,7 +8,7 @@ fn print_message_count_by_user() {
         "test_json/Direct Messages - Group - 1600s need not apply [1032681951666122772].json",
     )
     .unwrap();
-    let users = stats::message_count_by_user(&json.messages);
+    let users = data::message_count_by_user(&json.messages);
 
     for user in users {
         println!("{}: {}", user.1 .0.name, user.1 .1);
@@ -21,7 +21,7 @@ fn print_all_users() {
         "test_json/Direct Messages - Group - 1600s need not apply [1032681951666122772].json",
     )
     .unwrap();
-    let users = stats::all_users(&json.messages);
+    let users = data::all_users(&json.messages);
     for user in users {
         println!("{:?}", user);
     }
@@ -33,7 +33,7 @@ fn print_word_count() {
         "test_json/Direct Messages - Group - 1600s need not apply [1032681951666122772].json",
     )
     .unwrap();
-    let mut words: Vec<_> = stats::word_frequency(&json.messages, false, true)
+    let mut words: Vec<_> = data::word_frequency(&json.messages, false, true)
         .into_iter()
         .collect();
     words.sort_by(|a, b| a.1.cmp(&b.1));
@@ -48,5 +48,5 @@ fn print_total_word_count() {
         "test_json/Direct Messages - Group - 1600s need not apply [1032681951666122772].json",
     )
     .unwrap();
-    println!("{:?}", stats::word_count(&json.messages));
+    println!("{:?}", data::word_count(&json.messages));
 }
