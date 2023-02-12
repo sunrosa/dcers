@@ -98,11 +98,9 @@ pub fn search_sequenced(
             {
                 Some(s) => s.to_vec(),
                 None => {
-                    let mut lower_bound = i.saturating_sub(search_distance);
-                    let mut upper_bound = i.saturating_add(search_distance);
-                    if lower_bound < 0 {
-                        lower_bound = 0;
-                    }
+                    let lower_bound = i.saturating_sub(search_distance); // This will always be above zero (and therefore in range).
+                    let mut upper_bound = i.saturating_add(search_distance); // This MAY be out of range, and therefore must be clamped.
+
                     if upper_bound > messages.len() - 1 {
                         upper_bound = messages.len() - 1;
                     }
