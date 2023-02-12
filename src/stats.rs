@@ -81,6 +81,31 @@ pub fn word_count(messages: &Vec<model::Message>) -> u32 {
     return word_count;
 }
 
+/// Search through all messages for a string contained in their content. When a message is matched, it is outputted in a Vec alongside however many are specified in the search_distance argument.
+/// * `messages` - The messages to search through.
+/// * `search_term` - The string to search through the message content for.
+/// * `search_distance` - The number of messages surrounding the matched message to include
+/// # Known issues
+/// * If a message is matched at the beginning or end of the Vec of messages passed in, so that the search_distance is trying to access messages that do not exist, this function will only output one message instead.
+pub fn search_sequenced(
+    messages: &Vec<model::Message>,
+    search_term: &str,
+    search_distance: usize,
+) -> anyhow::Result<Vec<Vec<model::Message>>> {
+    let mut matches: Vec<Vec<model::Message>> = Default::default();
+    for (i, message) in messages.iter().enumerate() {
+        if message.content.to_lowercase().contains(search_term) {
+            let sequence = match messages.get(i - search_distance..=i + search_distance) {
+                Some(s) => s.to_vec(),
+                None => vec![message.clone()], // TODO: Fix this known issue. Make it so that it outputs a range of messages instead of just one.
+            };
+            matches.push(sequence);
+        }
+    }
+
+    return Ok(matches);
+}
+
 #[cfg(test)]
 mod test {
     use super::*;

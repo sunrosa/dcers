@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 pub type Id = String;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ExportedJson {
     pub guild: Guild,
     pub channel: Channel,
@@ -14,7 +14,7 @@ pub struct ExportedJson {
     pub date_range: DateRange,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Message {
     pub id: Id,
     #[serde(rename = "type")]
@@ -36,7 +36,7 @@ pub struct Message {
     pub reference: Option<Reference>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone, Copy)]
 pub enum MessageType {
     Default,
     RecipientAdd,
@@ -52,7 +52,7 @@ pub enum MessageType {
     ThreadCreated,
 }
 
-#[derive(Debug, Deserialize, Serialize, PartialEq)]
+#[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
 pub struct User {
     pub id: Id,
     pub name: String,
@@ -62,7 +62,7 @@ pub struct User {
     pub is_bot: bool,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Attachment {
     pub id: Id,
     pub url: String,
@@ -72,7 +72,7 @@ pub struct Attachment {
     pub file_size_bytes: u32,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Embed {
     pub title: String,
     pub url: Option<String>,
@@ -85,21 +85,21 @@ pub struct Embed {
     pub fields: Vec<Field>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Thumbnail {
     pub url: String,
     pub width: u32,
     pub height: u32,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Image {
     pub url: String,
     pub width: u32,
     pub height: u32,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Field {
     pub name: String,
     pub value: String,
@@ -107,7 +107,7 @@ pub struct Field {
     pub is_inline: bool,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Sticker {
     pub id: Id,
     pub name: String,
@@ -116,13 +116,13 @@ pub struct Sticker {
     pub source_url: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Reaction {
     pub emoji: Emoji,
     pub count: u32,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Emoji {
     pub id: Id,
     pub name: String,
@@ -132,13 +132,13 @@ pub struct Emoji {
     pub image_url: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct EmbedAuthor {
     pub name: String,
     pub url: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Reference {
     #[serde(rename = "messageId")]
     pub message_id: Option<Id>,
@@ -148,7 +148,7 @@ pub struct Reference {
     pub guild_id: Option<Id>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Guild {
     pub id: Id,
     pub name: String,
@@ -156,7 +156,7 @@ pub struct Guild {
     pub icon_url: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Channel {
     pub id: Id,
     #[serde(rename = "type")]
@@ -168,14 +168,14 @@ pub struct Channel {
     pub topic: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone, Copy)]
 pub enum ChannelType {
     DirectGroupTextChat,
     GuildTextChat,
     DirectTextChat,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone, Copy)]
 pub struct DateRange {
     pub after: Option<DateTime<Utc>>,
     pub before: Option<DateTime<Utc>>,
