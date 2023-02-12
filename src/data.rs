@@ -85,8 +85,6 @@ pub fn word_count(messages: &Vec<model::Message>) -> u32 {
 /// * `messages` - The messages to search through.
 /// * `search_term` - The string to search through the message content for.
 /// * `search_distance` - The number of messages surrounding the matched message to include
-/// # Known issues
-/// * If a message is matched at the beginning or end of the Vec of messages passed in, so that the search_distance is trying to access messages that do not exist, this function will only output one message instead.
 pub fn search_sequenced(
     messages: &Vec<model::Message>,
     search_term: &str,
@@ -95,9 +93,31 @@ pub fn search_sequenced(
     let mut matches: Vec<Vec<model::Message>> = Default::default();
     for (i, message) in messages.iter().enumerate() {
         if message.content.to_lowercase().contains(search_term) {
-            let sequence = match messages.get(i - search_distance..=i + search_distance) {
+            let sequence = match messages
+                .get(i.saturating_sub(search_distance)..=i.saturating_add(search_distance))
+            {
                 Some(s) => s.to_vec(),
-                None => vec![message.clone()], // TODO: Fix this known issue. Make it so that it outputs a range of messages instead of just one.
+                None => {
+                    let mut lower_bound = i.saturating_sub(search_distance);
+                    let mut upper_bound = i.saturating_add(search_distance);
+                    if lower_bound < 0 {
+                        lower_bound = 0;
+                    }
+                    if upper_bound > messages.len() - 1 {
+                        upper_bound = messages.len() - 1;
+                    }
+
+                    let fail = format!(
+                        "You should never see this message. search_sequenced attempted to access an index out of bounds, despite the bounds being clamped\nSLICE ACCESS {}..={}\nARRAY LEN {}",
+                        lower_bound,
+                        upper_bound,
+                        messages.len()
+                    );
+                    messages
+                        .get(lower_bound..=upper_bound)
+                        .expect(fail.as_str())
+                        .to_vec()
+                }
             };
             matches.push(sequence);
         }
